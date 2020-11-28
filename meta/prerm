@@ -1,0 +1,4 @@
+#!/bin/sh
+if [ -z "$D" ]; then
+	killall -q xupnpd
+fi

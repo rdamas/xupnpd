@@ -1,17 +1,13 @@
 cfg={}
 
-cfg.ui_auth_file='auth.txt'
-
-cfg.ui_session_file='/tmp/xupnpd.session'
-
 -- multicast interface for SSDP exchange, 'eth0', 'br0', 'br-lan' for example
-cfg.ssdp_interface='lo'
+cfg.ssdp_interface='any'
 
 -- 'cfg.ssdp_loop' enables multicast loop (if player and server in one host)
 cfg.ssdp_loop=1
 
 -- SSDP announcement interval
-cfg.ssdp_notify_interval=15
+cfg.ssdp_notify_interval=5
 
 -- SSDP announcement age
 cfg.ssdp_max_age=1800
@@ -23,20 +19,31 @@ cfg.http_port=4044
 cfg.log_facility='local0'
 
 -- 'cfg.daemon' detach server from terminal
-cfg.daemon=false
+cfg.daemon=true
 
 -- silent mode - no logs, no pid file
-cfg.embedded=false
+cfg.embedded=true
 
 -- 'cfg.debug' enables SSDP debug output to stdout (if cfg.daemon=false)
 -- 0-off, 1-basic, 2-messages
-cfg.debug=1
+cfg.debug=0
 
 -- external 'udpxy' url for multicast playlists (udp://@...)
 --cfg.udpxy_url='http://192.168.1.1:4022'
 
+f = io.popen("ip addr list")
+repeat 
+    l = f:read()
+    if l then
+        m = string.match(l, "^%d: (%w+): <")
+        if m then current = m end
+        m = string.match(l, "inet (%d+%.%d+%.%d+%.%d+)/")
+        if m and m ~= "127.0.0.1" then interface, ip = current, m break end
+    end
+until not l
+
 -- downstream interface for builtin multicast proxy (comment 'cfg.udpxy_url' for processing 'udp://@...' playlists)
-cfg.mcast_interface='eth1'
+cfg.mcast_interface = interface
 
 -- 'cfg.proxy' enables proxy for injection DLNA headers to stream
 -- 0-off, 1-radio, 2-radio/TV
@@ -55,16 +62,17 @@ cfg.dlna_notify=true
 cfg.dlna_subscribe_ttl=1800
 
 -- group by 'group-title'
-cfg.group=true
+cfg.group=false
 
 -- sort files
-cfg.sort_files=false
+cfg.sort_files=true
 
 -- Device name
-cfg.name='UPnP-IPTV'
+--cfg.name='UPnP-IPTV'
+cfg.name=io.popen("uname -n"):read("*l")..'-xupnpd'
 
 -- static device UUID, '60bd2fb3-dabe-cb14-c766-0e319b54c29a' for example or nil
-cfg.uuid='60bd2fb3-dabe-cb14-c766-0e319b54c29a'
+cfg.uuid=''
 
 -- max url cache size
 cfg.cache_size=8
@@ -76,18 +84,15 @@ cfg.cache_ttl=900
 cfg.default_mime_type='mpeg'
 
 -- feeds update interval (seconds, 0 - disabled)
-cfg.feeds_update_interval=0
+cfg.feeds_update_interval=3600
 cfg.playlists_update_interval=0
-
--- host for UI playlist download
---cfg.extern_url='http://youhost.com'
 
 -- playlist (m3u file path or path with alias
 playlist=
 {
---    { './playlists/mozhay.m3u', 'Mozhay.tv' },
---    { './localmedia', 'Local Media Files' }
---    { './private', 'Private Media Files', '127.0.0.1;192.168.1.1' }  -- only for 127.0.0.1 and 192.168.1.1
+    { '/media/hdd/movie',    'Filme' },
+    { '/media/hdd/music',    'Musik' },
+    { '/media/hdd/pictures', 'Bilder' },
 }
 
 -- feeds list (plugin, feed name, feed type)
@@ -104,6 +109,7 @@ feeds=
 --    { 'gametrailers',   'ps3',                   'GT - PS3' },
 --    { 'giantbomb',      'all',                  'GiantBomb - All' },
 --    { 'dreambox',       'http://192.168.0.1:8001/','Dreambox1' },
+      { 'vuplus',         ip,                     'VU' },
 }
 
 -- log ident, pid file end www root
@@ -115,7 +121,7 @@ cfg.tmp_path='/tmp/'
 cfg.plugin_path='./plugins/'
 cfg.config_path='./config/'
 cfg.playlists_path='./playlists/'
---cfg.feeds_path='/tmp/xupnpd-feeds/'
+cfg.feeds_path='./feeds/'
 cfg.ui_path='./ui/'
 cfg.drive=''                    -- reload playlists only if drive state=active/idle, example: cfg.drive='/dev/sda'
 cfg.profiles='./profiles/'      -- device profiles feature

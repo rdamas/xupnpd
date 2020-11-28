@@ -2,6 +2,9 @@
 -- clark15b@gmail.com
 -- https://tsdemuxer.googlecode.com/svn/trunk/xupnpd
 
+-- fix memleak on coolstream boxes by changing collectgarbage() interval from 200 (default) to 50
+collectgarbage('setpause', 50)
+
 http.sendurl_buffer_size(32768,1);
 
 if cfg.daemon==true then core.detach() end
@@ -58,7 +61,7 @@ cfg.dev_desc_xml='/dev.xml'             -- UPnP Device Description XML
 cfg.upnp_container='object.container'   -- UPnP class for containers
 cfg.upnp_artist=false                   -- send <upnp:artist> / <upnp:actor> in SOAP response
 cfg.upnp_feature_list=''                -- X_GetFeatureList response body
-cfg.upnp_albumart=0                     -- 0: <upnp:albumArtURI>direct url</upnp:albumArtURI>, 1: <res>direct url<res>, 2: <upnp:albumArtURI>local url</upnp:albumArtURI>, 3: <res>local url<res>
+cfg.upnp_albumart=1                     -- 0: <upnp:albumArtURI>direct url</upnp:albumArtURI>, 1: <res>direct url<res>, 2: <upnp:albumArtURI>local url</upnp:albumArtURI>, 3: <res>local url<res>
 cfg.dlna_headers=true                   -- send TransferMode.DLNA.ORG and ContentFeatures.DLNA.ORG in HTTP response
 cfg.dlna_extras=true                    -- DLNA extras in headers and SOAP
 cfg.content_disp=false                  -- send Content-Disposition when streaming
@@ -85,6 +88,8 @@ dofile('xupnpd_mime.lua')
 -- load config, plugins and profiles
 load_plugins(cfg.plugin_path,'plugin')
 load_plugins(cfg.config_path,'config')
+
+if cfg.profiles then load_plugins(cfg.profiles,'profile') end
 
 dofile('xupnpd_m3u.lua')
 dofile('xupnpd_ssdp.lua')
@@ -287,6 +292,35 @@ function get_drive_state(drive)
 
     return string.match(s,'drive state is:%s+(.+)%s+')
 end
+
+
+function profile_change(user_agent,req)
+    if not user_agent or user_agent=='' then return end
+
+    for name,profile in pairs(profiles) do
+        local match=profile.match
+
+        if profile.disabled~=true and  match and match(user_agent,req) then
+
+            local options=profile.options
+            local mtypes=profile.mime_types
+
+            if options then for i,j in pairs(options) do cfg[i]=j end end
+
+            if mtypes then
+                if profile.replace_mime_types==true then
+                    mime=mtypes
+                else
+                    for i,j in pairs(mtypes) do mime[i]=j end
+                end
+            end
+
+            return name
+        end
+    end
+    return nil
+end
+
 
 -- event handlers
 events['SIGUSR1']=reload_playlist

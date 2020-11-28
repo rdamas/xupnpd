@@ -1,4 +1,4 @@
-# x86
+# Linux
 STAGING_DIR     =
 BIN             =
 LIBEXEC         =
@@ -6,7 +6,7 @@ CC              = gcc
 CPP             = g++
 STRIP           = strip
 RM              = rm
-PLATFORM        = x86
+PLATFORM        = linux
 TARGET_DIR      = .
 MY_CFLAGS       =
 

@@ -1418,6 +1418,18 @@ static int lua_util_sleep(lua_State* L)
     return 0;
 }
 
+static int lua_util_stat(lua_State* L)
+{
+    const char* path=lua_tostring(L,1);
+    struct stat sb;
+    if (path && lstat(path, &sb) == 0) {
+        lua_pushinteger(L, sb.st_mtime);
+    } else {
+        lua_pushnil(L);
+    }
+    return 1;
+}
+
 int luaopen_luaxlib(lua_State* L)
 {
     static const luaL_Reg lib_soap[]=
@@ -1462,6 +1474,7 @@ int luaopen_luaxlib(lua_State* L)
         {"win1251toUTF8",lua_util_win1251toUTF8},
         {"parse_postdata",lua_util_parse_post_data},
         {"sleep",lua_util_sleep},
+        {"stat",lua_util_stat},
         {0,0}
     };
 

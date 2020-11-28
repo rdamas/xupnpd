@@ -50,27 +50,32 @@ function playlist_item_to_xml(id,parent_id,pls)
 
     if pls.logo then
         local l
+        local mimetype1 = 'JPEG_TN'
+        local mimetype2 = 'http-get:*:image/jpeg:DLNA.ORG_PN=JPEG_TN'
 
         if cfg.upnp_albumart<2 then
             l=pls.logo
         else
             l=string.format('%s/logo/%s.jpeg',www_location,objid)
         end
+        
+        if l:sub(-#'.png') == '.png' then
+            mimetype1 = 'PNG_TN'
+            mimetype2 = 'http-get:*:image/png:DLNA.ORG_PN=PNG_TN'
+        end
 
         if cfg.upnp_albumart==0 or cfg.upnp_albumart==2 then
-            logo=string.format('<upnp:albumArtURI dlna:profileID=\"JPEG_TN\">%s</upnp:albumArtURI>',l)
+            -- logo=string.format('<upnp:albumArtURI dlna:profileID=\"JPEG_TN\">%s</upnp:albumArtURI>',l)
+            logo=string.format('<upnp:albumArtURI dlna:profileID=\"%s\">%s</upnp:albumArtURI>',mimetype1,l)
         else
-            logo=string.format('<res protocolInfo="http-get:*:image/jpeg:DLNA.ORG_PN=JPEG_TN">%s</res>',l)
+            -- logo=string.format('<res protocolInfo="http-get:*:image/jpeg:DLNA.ORG_PN=JPEG_TN">%s</res>',l)
+            logo=string.format('<res protocolInfo="%s">%s</res>',mimetype2,l)
         end
     end
 
     if cfg.sec_extras then
         if pls.path then
-            for i, n in ipairs(util.dir(pls.path:sub(1, pls.path:len() - pls.url:len()))) do
-                if n:sub(n:len() - 4+1) == ".srt" then
-                    sec_extras=string.format('<sec:CaptionInfoEx sec:type="srt">%s/sub/%s%s</sec:CaptionInfoEx>',www_location,objid,util.urlencode(n:sub(pls.url:len() - 4+1)))
-                end
-            end
+            sec_extras=string.format('<sec:CaptionInfoEx sec:type="srt">%s/sub/%s.srt</sec:CaptionInfoEx>',www_location,objid)
         end
 
         if pls.bookmark then
@@ -115,7 +120,7 @@ function get_playlist_item_parent(s)
     local t={}
 
     for i in string.gmatch(s,'(%w+)_') do table.insert(t,i) end
-
+    
     return table.concat(t,'_')
 end
 

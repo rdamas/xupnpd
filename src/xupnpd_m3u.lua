@@ -82,6 +82,7 @@ end
 
 function reload_playlists()
     playlist_data={}
+    collectgarbage()   -- free unused memory immediately
     playlist_data.name='root'
     playlist_data.objid='0'
     playlist_data.size=0

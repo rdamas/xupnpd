@@ -541,8 +541,10 @@ function ui_restart()
 end
 
 function ui_logout()
-    os.remove(cfg.ui_session_file)
-    http.send('<meta http-equiv="refresh" content="0;URL=/"ui//"" />')
+    if cfg.ui_session_file then
+        os.remove(cfg.ui_session_file)
+    end
+    http.send('<meta http-equiv="refresh" content="0;URL=/ui/" />')
 end
 
 function ui_login()
@@ -552,7 +554,7 @@ function ui_login()
         write_file(cfg.ui_session_file, compare_session_id)
         http_data=string.format('<script>document.cookie="%s"</script>', compare_session_id)
 	http.send(http_data)
-        http.send('<meta http-equiv="refresh" content="0;URL=/"ui//"" />')
+        http.send('<meta http-equiv="refresh" content="0;URL=/ui/" />')
     else
         http.send('<h2>Wrong password</h2>')
     end
@@ -562,8 +564,10 @@ function ui_set_password()
     if ui_data and ui_data ~= '' then
         password_enc = util.md5_string_hash(ui_data)
         write_file(cfg.ui_auth_file, password_enc)
-        os.remove(cfg.ui_session_file)
-        http.send('<meta http-equiv="refresh" content="3;URL=/"ui//"" />')
+        if cfg.ui_session_file then
+            os.remove(cfg.ui_session_file)
+        end
+        http.send('<meta http-equiv="refresh" content="3;URL=/ui/" />')
         http.send('<h4>Password changed, you will be redirected in 3 secons, please login again.</h4>')
     else
         http.send('<h3>Set / change access password.</h3>')
@@ -584,19 +588,23 @@ end
 
 function read_file (file)
     local content
-    local f = io.open(file, "r")
-    if f then
-        local fa = assert(f)
-        content = string.gsub(fa:read("*all"),'\n','')
-        f:close()
+    if file then
+        local f = io.open(file, "r")
+        if f then
+            local fa = assert(f)
+            content = string.gsub(fa:read("*all"),'\n','')
+            f:close()
+        end
     end
     return content
 end
 
 function write_file (file, data)
-  local write_handle = io.open(file, "w")
-  write_handle:write(data)
-  write_handle:close()
+    if file then
+        local write_handle = io.open(file, "w")
+        write_handle:write(data)
+        write_handle:close()
+    end
 end
 
 ui_actions=

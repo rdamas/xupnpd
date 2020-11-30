@@ -2,3 +2,4 @@
 if [ -z "$D" ]; then
 	killall -q xupnpd
 fi
+exit 0

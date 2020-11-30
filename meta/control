@@ -1,5 +1,5 @@
 Package: xupnpd
-Version: 1.03-r7
+Version: 1.03-r8
 Section: net
 Architecture: armv7ahf-vfp-neon
 Depends: libc6 (>= 2.21)

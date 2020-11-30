@@ -120,13 +120,16 @@ function vuplus_save_bouquets(feed, friendly_name, mode, sysip)
 		m3ufile:write("#EXTM3U name=\""..trim(bobj.servicename).."\" plugin=vuplus type=ts\n")
 		local j, sbobj = {}
 		for j, sbobj in pairs(bobj.subservices) do
-			local logo = find_picon(sbobj.servicereference,sbobj.servicename)
-			local logourl = ""
-			if logo then
-				logourl=string.format(" logo=http://%s/picon/%s",feed,logo)
+			-- skip marker entries
+			if not bobj.subservices:match("^%w+:64:") then
+				local logo = find_picon(sbobj.servicereference,sbobj.servicename)
+				local logourl = ""
+				if logo then
+					logourl=string.format(" logo=http://%s/picon/%s",feed,logo)
+				end
+				m3ufile:write("#EXTINF:0"..logourl..","..sbobj.servicename.."\n")
+				m3ufile:write("http://"..feed..":8001/"..sbobj.servicereference.."\n")
 			end
-			m3ufile:write("#EXTINF:0"..logourl..","..sbobj.servicename.."\n")
-			m3ufile:write("http://"..feed..":8001/"..sbobj.servicereference.."\n")
 		end
 		m3ufile:close()
 		os.execute(string.format('mv %s %s',m3ufilename,feedspath))

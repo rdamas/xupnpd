@@ -15,6 +15,8 @@ if cfg.daemon==true then core.touchpid(cfg.pid_file) end
 
 if cfg.embedded==true then cfg.debug=0 end
 
+table.maxn = table.maxn or function(t) return #t end
+
 function clone_table(t)
     local tt={}
     for i,j in pairs(t) do

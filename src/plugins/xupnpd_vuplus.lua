@@ -31,13 +31,13 @@ function is_file(name)
 end
 
 function convert_picon(picon)
-	core.log("convert: "..picon)
+	-- core.log("convert: "..picon)
 	local logo = "xupnpd/"..picon:gsub(".png$",".jpg")
 	if is_file(picon_path..logo) then
 		local lm_picon = util.stat(picon_path..picon)
 		local lm_logo = util.stat(picon_path..logo)
 		if lm_logo and lm_picon and lm_logo > lm_picon then
-			core.log("    nichts zu tun")
+			-- core.log("    nichts zu tun")
 			return logo
 		end
 	end
@@ -45,16 +45,16 @@ function convert_picon(picon)
 	if have_im6 == nil then
 		have_im6 = is_file("/usr/bin/convert.im6")
 		os.execute("/bin/mkdir -p "..picon_path.."xupnpd")
-		core.log("    Logo-Verzeichnis angelegt")
+		-- core.log("    Logo-Verzeichnis angelegt")
 	end
 	if have_im6 then
 		local cmd = string.format("/usr/bin/convert.im6 '%s' -resize 150x150 -gravity center -background '#061324' -extent 170x236 '%s'", picon_path..picon:gsub("*","\\*"), picon_path..logo)
 		os.execute(cmd)
-		core.log("    Picon konvertieren: "..cmd)
-		core.log("    Return: "..logo)
+		-- core.log("    Picon konvertieren: "..cmd)
+		-- core.log("    Return: "..logo)
 		return logo
 	end
-	core.log("    Falltrough und return: "..picon)
+	-- core.log("    Falltrough und return: "..picon)
 	return picon
 end
 
@@ -121,7 +121,7 @@ function vuplus_save_bouquets(feed, friendly_name, mode, sysip)
 		local j, sbobj = {}
 		for j, sbobj in pairs(bobj.subservices) do
 			-- skip marker entries
-			if not bobj.subservices:match("^%w+:64:") then
+			if not sbobj.servicereference:match("^%w+:64:") then
 				local logo = find_picon(sbobj.servicereference,sbobj.servicename)
 				local logourl = ""
 				if logo then

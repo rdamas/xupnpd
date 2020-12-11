@@ -19,4 +19,4 @@ clean:
 	PATH=$(PATH):$(LIBEXEC) STAGING_DIR=$(STAGING_DIR) $(CC) -c -o $@ $<
 
 .cpp.o:
-	PATH=$(PATH):$(LIBEXEC) STAGING_DIR=$(STAGING_DIR) $(CPP) -c $(CFLAGS) -o $@ $<
+	PATH=$(PATH):$(LIBEXEC) STAGING_DIR=$(STAGING_DIR) $(CXX) -c $(CFLAGS) -o $@ $<

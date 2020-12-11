@@ -16,7 +16,7 @@ cp -pr ../meta/* .
 
 mkdir -p usr/share/xupnpd usr/bin
 cp -pr ../src/*.lua ../src/{playlists,plugins,profiles,ui,www} usr/share/xupnpd/
-cp -p ../src/xupnpd-linux usr/bin/xupnpd
+cp -p ../src/xupnpd usr/bin/xupnpd
 
 tar -czf control.tar.gz $(ls control conffiles pre* post* 2> /dev/null)
 tar -czf data.tar.gz ./etc ./usr

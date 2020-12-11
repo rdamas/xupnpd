@@ -20,7 +20,7 @@ clean:
 install: all
 	mkdir -p $(DESTDIR)$(PREFIX)/bin $(DESTDIR)$(PREFIX)/share/xupnpd
 	cp -pr *.lua plugins profiles ui www $(DESTDIR)$(PREFIX)/share/xupnpd
-	$(INSTALL) -m 0755 -s $(TARGET_DIR)/xupnpd $(DESTDIR)$(PREFIX)/bin/xupnpd
+	$(INSTALL) -m 0755 $(TARGET_DIR)/xupnpd $(DESTDIR)$(PREFIX)/bin/xupnpd
 
 .c.o:
 	$(CC) -c $(EXTRA_CFLAGS) -o $@ $<

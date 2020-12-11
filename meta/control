@@ -1,8 +1,8 @@
 Package: xupnpd
-Version: 1.03-r8
+Version: 1.03-r10
 Section: net
 Architecture: armv7ahf-vfp-neon
-Depends: libc6 (>= 2.21)
+Depends: libc6 (>= 2.21), libssl1.0.0, libcrypto1.0.0
 Priority: extra
 License: GPL v2
 Maintainer: clark15b@doom9 <clark15b@gmail.com>

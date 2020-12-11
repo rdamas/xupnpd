@@ -30,19 +30,19 @@ wait_for_webif()
 case $1 in
 start)  
 	validate_pidfile
-        if [ -e /etc/xupnpd.lua ]; then
+        if [ -e /usr/bin/xupnpd ]; then
         	wait_for_webif
                 /usr/bin/xupnpd
         fi
         ;;
 stop)
-        if [ -e /etc/xupnpd.lua ]; then
+        if [ -e /usr/bin/xupnpd ]; then
                 killall -qw xupnpd
         fi
 	validate_pidfile
         ;;
 restart)
-        if [ -e /etc/xupnpd.lua ]; then
+        if [ -e /usr/bin/xupnpd ]; then
                 killall -qw xupnpd
                 validate_pidfile
                 /usr/bin/xupnpd

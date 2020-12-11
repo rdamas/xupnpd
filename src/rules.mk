@@ -7,7 +7,7 @@ INSTALL = install
 PREFIX  = /usr/local
 
 all: $(LIBS) $(OBJS)
-	$(CC) $(CFLAGS) -o $(TARGET_DIR)/xupnpd $(OBJS) $(LIBS) -ldl -lm -lcrypto -lssl
+	$(CC) $(CFLAGS) -s -o $(TARGET_DIR)/xupnpd $(OBJS) $(LIBS) -ldl -lm -lcrypto -lssl
 
 $(LUA)/liblua.a:
 	$(MAKE) -C $(LUA) a CC="$(CC)" MYCFLAGS="-DLUA_USE_LINUX -Os"
@@ -18,8 +18,8 @@ clean:
 	$(RM) -f $(TARGET_DIR)/xupnpd
 
 install: all
-	mkdir -p $(DESTDIR)$(PREFIX)/share/xupnpd
-	cp -pr *.lua {playlists,plugins,profiles,ui,www} $(DESTDIR)$(PREFIX)/share/xupnpd
+	mkdir -p $(DESTDIR)$(PREFIX)/bin $(DESTDIR)$(PREFIX)/share/xupnpd
+	cp -pr *.lua plugins profiles ui www $(DESTDIR)$(PREFIX)/share/xupnpd
 	$(INSTALL) -m 0755 -s $(TARGET_DIR)/xupnpd $(DESTDIR)$(PREFIX)/bin/xupnpd
 
 .c.o:

@@ -10,7 +10,7 @@ DEPENDS = "openssl"
 LICENSE = "GPLv2"
 LIC_FILES_CHKSUM = "file://LICENSE;md5=193ff0a3bc8b0d2cb0d1d881586d3388"
 
-PR = "r10"
+PR = "r11"
 PV = "1.03"
 
 SRC_URI = " \

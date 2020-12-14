@@ -27,6 +27,13 @@
                 <depth>8</depth>
                 <url>/icon-48x48.png</url>
            </icon>
+           <icon>
+                <mimetype>image/png</mimetype>
+                <height>240</height>
+                <width>240</width>
+                <depth>8</depth>
+                <url>/logo.png</url>
+           </icon>
         </iconList>
         <serviceList>
             <service>

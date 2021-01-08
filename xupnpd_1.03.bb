@@ -14,7 +14,7 @@ PR = "r11"
 PV = "1.03"
 
 SRC_URI = " \
-	git://github.com/rdamas/xupnpd.git;branch=release;tag=${PV}-${PR} \
+	git://github.com/rdamas/xupnpd.git;branch=release;tag=v${PV}-${PR} \
 	"
 
 S = "${WORKDIR}/git"
